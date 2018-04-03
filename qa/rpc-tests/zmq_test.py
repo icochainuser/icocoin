@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2015-2016 The Bitcoin Core developers
+# Copyright (c) 2015-2016 The Icocoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,7 +7,7 @@
 # Test ZMQ interface
 #
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import IcocoinTestFramework
 from test_framework.util import *
 import zmq
 import struct
@@ -15,9 +15,9 @@ import struct
 import http.client
 import urllib.parse
 
-class ZMQTest (BitcoinTestFramework):
+class ZMQTest (IcocoinTestFramework):
 
-    port = 28332
+    port = 28507
 
     def setup_nodes(self):
         self.zmqContext = zmq.Context()

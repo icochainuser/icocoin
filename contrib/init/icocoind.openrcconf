@@ -1,0 +1,33 @@
+# /etc/conf.d/icocoind: config file for /etc/init.d/icocoind
+
+# Config file location
+#ICOCOIND_CONFIGFILE="/etc/icocoin/icocoin.conf"
+
+# What directory to write pidfile to?  (created and owned by $ICOCOIND_USER)
+#ICOCOIND_PIDDIR="/var/run/icocoind"
+
+# What filename to give the pidfile
+#ICOCOIND_PIDFILE="${ICOCOIND_PIDDIR}/icocoind.pid"
+
+# Where to write icocoind data (be mindful that the blockchain is large)
+#ICOCOIND_DATADIR="/var/lib/icocoind"
+
+# User and group to own icocoind process
+#ICOCOIND_USER="icocoin"
+#ICOCOIND_GROUP="icocoin"
+
+# Path to icocoind executable
+#ICOCOIND_BIN="/usr/bin/icocoind"
+
+# Nice value to run icocoind under
+#ICOCOIND_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+ICOCOIND_OPTS="-disablewallet"
+
+# The timeout in seconds OpenRC will wait for icocoind to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+ICOCOIND_SIGTERM_TIMEOUT=60

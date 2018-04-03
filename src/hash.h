@@ -1,10 +1,10 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2015 The Icocoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_HASH_H
-#define BITCOIN_HASH_H
+#ifndef ICOCOIN_HASH_H
+#define ICOCOIN_HASH_H
 
 #include "crypto/ripemd160.h"
 #include "crypto/sha256.h"
@@ -12,12 +12,13 @@
 #include "serialize.h"
 #include "uint256.h"
 #include "version.h"
+#include "crypto/scrypt.h"
 
 #include <vector>
 
 typedef uint256 ChainCode;
 
-/** A hasher class for Bitcoin's 256-bit hash (double SHA-256). */
+/** A hasher class for Icocoin's 256-bit hash (double SHA-256). */
 class CHash256 {
 private:
     CSHA256 sha;
@@ -41,7 +42,7 @@ public:
     }
 };
 
-/** A hasher class for Bitcoin's 160-bit hash (SHA-256 + RIPEMD-160). */
+/** A hasher class for Icocoin's 160-bit hash (SHA-256 + RIPEMD-160). */
 class CHash160 {
 private:
     CSHA256 sha;
@@ -61,6 +62,54 @@ public:
 
     CHash160& Reset() {
         sha.Reset();
+        return *this;
+    }
+};
+
+/** A hasher class for Bitcoin's 256-bit PoW hash (Double SHA-256). */
+class CDoubleSHA256Pow
+{
+private:
+    CSHA256 sha;
+public:
+    static const size_t OUTPUT_SIZE = CSHA256::OUTPUT_SIZE;
+
+    void Finalize(unsigned char hash[OUTPUT_SIZE]) {
+        unsigned char buf[sha.OUTPUT_SIZE];
+        sha.Finalize(buf);
+        sha.Reset().Write(buf, sha.OUTPUT_SIZE).Finalize(hash);
+    }
+
+    CDoubleSHA256Pow& Write(const unsigned char *data, size_t len) {
+        sha.Write(data, len);
+        return *this;
+    }
+
+    CDoubleSHA256Pow& Reset() {
+        sha.Reset();
+        return *this;
+    }
+};
+
+/** A hasher class for Bitcoin's 256-bit PoW hash (Single Scrypt-256). */
+class CScryptHash256Pow
+{
+private:
+    CScrypt256 scrypt;
+public:
+    static const size_t OUTPUT_SIZE = CScrypt256::OUTPUT_SIZE;
+
+    void Finalize(unsigned char hash[OUTPUT_SIZE]) {
+        scrypt.Finalize(hash);
+    }
+
+    CScryptHash256Pow& Write(const unsigned char *data, size_t len) {
+        scrypt.Write(data, len);
+        return *this;
+    }
+
+    CScryptHash256Pow& Reset() {
+        scrypt.Reset();
         return *this;
     }
 };
@@ -171,4 +220,4 @@ unsigned int MurmurHash3(unsigned int nHashSeed, const std::vector<unsigned char
 
 void BIP32Hash(const ChainCode &chainCode, unsigned int nChild, unsigned char header, const unsigned char data[32], unsigned char output[64]);
 
-#endif // BITCOIN_HASH_H
+#endif // ICOCOIN_HASH_H

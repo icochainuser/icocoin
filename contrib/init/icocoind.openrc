@@ -1,0 +1,92 @@
+#!/sbin/runscript
+
+# backward compatibility for existing gentoo layout 
+#
+if [ -d "/var/lib/icocoin/.icocoin" ]; then
+	ICOCOIND_DEFAULT_DATADIR="/var/lib/icocoin/.icocoin"
+else
+	ICOCOIND_DEFAULT_DATADIR="/var/lib/icocoind"
+fi
+
+ICOCOIND_CONFIGFILE=${ICOCOIND_CONFIGFILE:-/etc/icocoin/icocoin.conf}
+ICOCOIND_PIDDIR=${ICOCOIND_PIDDIR:-/var/run/icocoind}
+ICOCOIND_PIDFILE=${ICOCOIND_PIDFILE:-${ICOCOIND_PIDDIR}/icocoind.pid}
+ICOCOIND_DATADIR=${ICOCOIND_DATADIR:-${ICOCOIND_DEFAULT_DATADIR}}
+ICOCOIND_USER=${ICOCOIND_USER:-${ICOCOIN_USER:-icocoin}}
+ICOCOIND_GROUP=${ICOCOIND_GROUP:-icocoin}
+ICOCOIND_BIN=${ICOCOIND_BIN:-/usr/bin/icocoind}
+ICOCOIND_NICE=${ICOCOIND_NICE:-${NICELEVEL:-0}}
+ICOCOIND_OPTS="${ICOCOIND_OPTS:-${ICOCOIN_OPTS}}"
+
+name="Icocoin Core Daemon"
+description="Icocoin cryptocurrency P2P network daemon"
+
+command="/usr/bin/icocoind"
+command_args="-pid=\"${ICOCOIND_PIDFILE}\" \
+		-conf=\"${ICOCOIND_CONFIGFILE}\" \
+		-datadir=\"${ICOCOIND_DATADIR}\" \
+		-daemon \
+		${ICOCOIND_OPTS}"
+
+required_files="${ICOCOIND_CONFIGFILE}"
+start_stop_daemon_args="-u ${ICOCOIND_USER} \
+			-N ${ICOCOIND_NICE} -w 2000"
+pidfile="${ICOCOIND_PIDFILE}"
+
+# The retry schedule to use when stopping the daemon. Could be either
+# a timeout in seconds or multiple signal/timeout pairs (like
+# "SIGKILL/180 SIGTERM/300")
+retry="${ICOCOIND_SIGTERM_TIMEOUT}"
+
+depend() {
+	need localmount net
+}
+
+# verify
+# 1) that the datadir exists and is writable (or create it)
+# 2) that a directory for the pid exists and is writable
+# 3) ownership and permissions on the config file
+start_pre() {
+	checkpath \
+	-d \
+	--mode 0750 \
+	--owner "${ICOCOIND_USER}:${ICOCOIND_GROUP}" \
+	"${ICOCOIND_DATADIR}"
+
+	checkpath \
+	-d \
+	--mode 0755 \
+	--owner "${ICOCOIND_USER}:${ICOCOIND_GROUP}" \
+	"${ICOCOIND_PIDDIR}"
+
+	checkpath -f \
+	-o ${ICOCOIND_USER}:${ICOCOIND_GROUP} \
+	-m 0660 \
+	${ICOCOIND_CONFIGFILE}
+
+	checkconfig || return 1
+}
+
+checkconfig()
+{
+	if ! grep -qs '^rpcpassword=' "${ICOCOIND_CONFIGFILE}" ; then
+		eerror ""
+		eerror "ERROR: You must set a secure rpcpassword to run icocoind."
+		eerror "The setting must appear in ${ICOCOIND_CONFIGFILE}"
+		eerror ""
+		eerror "This password is security critical to securing wallets "
+		eerror "and must not be the same as the rpcuser setting."
+		eerror "You can generate a suitable random password using the following"
+		eerror "command from the shell:"
+		eerror ""
+		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
+		eerror ""
+		eerror "It is also recommended that you also set alertnotify so you are "
+		eerror "notified of problems:"
+		eerror ""
+		eerror "ie: alertnotify=echo %%s | mail -s \"Icocoin Alert\"" \
+			"admin@foo.com"
+		eerror ""
+		return 1
+	fi
+}

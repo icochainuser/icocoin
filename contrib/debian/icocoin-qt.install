@@ -1,0 +1,6 @@
+usr/local/bin/icocoin-qt usr/bin
+share/pixmaps/icocoin32.xpm usr/share/pixmaps
+share/pixmaps/icocoin16.xpm usr/share/pixmaps
+share/pixmaps/icocoin128.png usr/share/pixmaps
+debian/icocoin-qt.desktop usr/share/applications
+debian/icocoin-qt.protocol usr/share/kde4/services/

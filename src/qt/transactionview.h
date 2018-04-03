@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2015 The Icocoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_TRANSACTIONVIEW_H
-#define BITCOIN_QT_TRANSACTIONVIEW_H
+#ifndef ICOCOIN_QT_TRANSACTIONVIEW_H
+#define ICOCOIN_QT_TRANSACTIONVIEW_H
 
 #include "guiutil.h"
 
@@ -114,4 +114,4 @@ public Q_SLOTS:
 
 };
 
-#endif // BITCOIN_QT_TRANSACTIONVIEW_H
+#endif // ICOCOIN_QT_TRANSACTIONVIEW_H

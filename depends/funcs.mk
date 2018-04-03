@@ -21,7 +21,7 @@ endef
 
 define fetch_file
 (test -f $$($(1)_source_dir)/$(4) || \
-  ( mkdir -p $$($(1)_download_dir) && echo Fetching $(1)... && \
+  ( mkdir -p $$($(1)_download_dir) && echo Fetching $(1)  $(2)  $(3)  $(4)  && \
   ( $(build_DOWNLOAD) "$$($(1)_download_dir)/$(4).temp" "$(2)/$(3)" || \
     $(build_DOWNLOAD) "$$($(1)_download_dir)/$(4).temp" "$(FALLBACK_DOWNLOAD_PATH)/$(3)" ) && \
     echo "$(5)  $$($(1)_download_dir)/$(4).temp" > $$($(1)_download_dir)/.$(4).hash && \

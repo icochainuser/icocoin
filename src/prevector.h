@@ -1,5 +1,5 @@
-#ifndef _BITCOIN_PREVECTOR_H_
-#define _BITCOIN_PREVECTOR_H_
+#ifndef _ICOCOIN_PREVECTOR_H_
+#define _ICOCOIN_PREVECTOR_H_
 
 #include <stdlib.h>
 #include <stdint.h>

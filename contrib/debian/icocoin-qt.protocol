@@ -1,0 +1,11 @@
+[Protocol]
+exec=icocoin-qt '%u'
+protocol=icocoin
+input=none
+output=none
+helper=true
+listing=
+reading=false
+writing=false
+makedir=false
+deleting=false

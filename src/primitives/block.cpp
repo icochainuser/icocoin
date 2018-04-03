@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2015 The Icocoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,7 +12,19 @@
 
 uint256 CBlockHeader::GetHash() const
 {
-    return SerializeHash(*this);
+    return ComputePowHash(nNonce);
+}
+
+uint256 CBlockHeader::ComputePowHash(uint32_t nNonce) const
+{
+    CScryptHash256Pow hasher;
+    CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
+    ss << *this;
+    assert(ss.size() == 80);
+    hasher.Write((unsigned char*)&ss[0], 76);
+    uint256 powHash;
+    CScryptHash256Pow(hasher).Write((unsigned char*)&nNonce, 4).Finalize((unsigned char*)&powHash);
+    return powHash;
 }
 
 std::string CBlock::ToString() const

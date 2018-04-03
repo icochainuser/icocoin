@@ -1,0 +1,22 @@
+[Unit]
+Description=Icocoin's distributed currency daemon
+After=network.target
+
+[Service]
+User=icocoin
+Group=icocoin
+
+Type=forking
+PIDFile=/var/lib/icocoind/icocoind.pid
+ExecStart=/usr/bin/icocoind -daemon -pid=/var/lib/icocoind/icocoind.pid \
+-conf=/etc/icocoin/icocoin.conf -datadir=/var/lib/icocoind -disablewallet
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
